@@ -43,6 +43,7 @@ In conversation, both Pattern and Spalding mentioned the _Harry Potter effect_: 
 
 # TO DO
 
+* Put this under a GPLv2 license (with "or later") (discuss)
 * Use xISBN and thingISBN: given book X, look up other manifestations of the same work, then look for and dedupe recommendations for all of them. Instead of offering recommendations based on one edition of a work, it would offer them based on the work.
 * Go beyond ISBNs into other standard numbers, such as LCCN and OCLCnums
 * Go beyond standard numbers!
