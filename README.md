@@ -41,6 +41,12 @@ In conversation, both Pattern and Spalding mentioned the _Harry Potter effect_: 
 
 * ["Readers who borrowed this also borrowed...": Recommender Systems in UK libraries](http://www.emeraldinsight.com/journals.htm?issn=0737-8831&volume=30&issue=1&articleid=17014513&show=abstract), by Simon Wakeling, Paul Clough, Barbara Sen and Lynn Connaway (_Library Hi Tech_ 30:1)
 
+# TO DO
+
+* Use xISBN and thingISBN: given book X, look up other manifestations of the same work, then look for and dedupe recommendations for all of them. Instead of offering recommendations based on one edition of a work, it would offer them based on the work.
+* Go beyond ISBNs into other standard numbers, such as LCCN and OCLCnums
+* Go beyond standard numbers!
+* Use for collection development purposes: give collection librarians a way of looking up what's recommended for a given book and seeing if it's in their collection. (Talk to collection librarians about what exactly they'd want.)
 
 # To start up
 
