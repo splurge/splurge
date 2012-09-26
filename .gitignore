@@ -1,3 +1,6 @@
+# Data files
+app/splurge/data/*.txt
+
 *~
 *.py[co]
 
