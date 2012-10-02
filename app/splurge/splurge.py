@@ -53,7 +53,7 @@ class Splurge:
   """ get the institutionId, if none found create one """
   def getInstitutionId_or_create(self,institution):
     records = self.getInstitutionId(institution)
-    if records: return records[0][0]
+    if records: return records
     self.addInstitution(institution)
     records = self.getInstitutionId(institution)
     return records[0][0]
