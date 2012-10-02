@@ -1,5 +1,5 @@
 # Data files
-app/splurge/data/*.txt
+app/splurge/data/*
 app/splurge/logs/*
 *~
 *.py[co]

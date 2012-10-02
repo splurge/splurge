@@ -56,7 +56,7 @@ class Splurge:
     if records: return records
     self.addInstitution(institution)
     records = self.getInstitutionId(institution)
-    return records[0][0]
+    return records
   
   def insert_isbns_fromfile(self,file):
     basename = os.path.basename(file)
