@@ -60,10 +60,12 @@ This assumes that you're a developer and have downloaded all of the data files f
 
 TODO: Add test data to the repo so this works out of the box for non-developers.
 
-Run this command:
+Run this:
 
     $ cd app/splurge
 	$ ./tool.py --update_database
+    $ ./tool.py --update_database_isbns
+	$ ./tool.py --update_database_transactions
 	
 This will take a while.	
 
