@@ -1,3 +1,18 @@
+# Setup
+
+Create a PostgreSQL database named `splurge` that can be accessed by an account with username `splurge_user`
+
+To set up the empty database, in `init/database/pgsql/` run this:
+
+    psql -d splurge -U splurge_user -W < setup.sql
+
+Later if you want to dump the entire database to back it up, run 
+
+    pg_dump -U splurge_user splurge
+
+# Older notes
+
+
 # Outstanding issues
 
 The query is slow.. it can take 0.5sec.

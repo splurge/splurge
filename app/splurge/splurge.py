@@ -13,7 +13,7 @@ class Splurge:
 
   logPath = os.path.join(os.path.dirname(__file__),"logs/")
   reIsbn = re.compile(r'''^([0-9]{13}|[0-9xX]{10})$''')
-  constr = "dbname='splurge' user='splurge' host='localhost' password='qweasd'"
+  constr = "dbname='splurge' user='splurge_user' host='localhost' password='splurge'"
   conn = None
   cur = None
   
