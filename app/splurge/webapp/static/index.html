@@ -1,31 +1,37 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Recommendation Widget</title>
-
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  <script type="text/javascript" src="init.js"></script>
+<title>SPLURGE Widget</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="init.js"></script>
 </head>
+
 <body>
-  <h3>Recommended books</h3>
+<h1>SPLURGE!</h1>
   
-  <p>example isbn inputs... 0023110465, 0787974668, 0802037925, 0948080604, random</p>
-  isbn:<input id='isbn' type='text' value='random'/>
+<p>Example ISBNs to paste in: 0023110465, 0787974668, 0802037925, 0948080604, random (or choose your own)</p>
+
+ISBN: <input id="isbn" type="text" value="random"/>
   
-  <p>only grab records from a select institution</p>
-  <div id='institution_list'>
-    <!-- results -->
-  </div>
-  institution(s):<input id='institutions' type='text' value='any'/>
+<p>Only use records from a given institution: <div id="institution_list">  <!-- results --> </div>  </p>
+
+Institution(s): <input id="institutions" type="text" value="any"/>
   
-  <p>find populer books in a year range</p>
-  startDate:<input id='startDate' type='text' value='2000'/>
-  endDate:<input id='endDate' type='text' value='2020'/>
+<p>
+
+Restrict to a given year range:
+
+</p>
+
+startDate: <input id="startDate" type="text" value="2000"/>
+endDate:   <input id="endDate" type="text" value="2020"/>
+
+<br />
   
-  <p>Click button to run query</p>
-  <button id='go' type="button">Ok</button>
+<button id="go" type="button">Find recommendations</button>
   
-  <div id='box'>
-    <!-- results -->
-  </div>
+<div id="box">
+   <!-- results -->
+</div>
 </body>
 </html>

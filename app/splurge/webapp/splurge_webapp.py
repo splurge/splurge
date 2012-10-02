@@ -13,7 +13,6 @@ app = Flask(__name__)
 #app.config.from_pyfile('splurge_production.conf')
 app.config.from_pyfile('splurge.conf')
 
-
 @app.route("/splurge_service/")
 def hello():
     out = """<html><head><title>SPLURGE Help</title></head><body><h1>Welcome to Splurge!</h1>
@@ -22,7 +21,7 @@ def hello():
     <p>institution startYear and endYear are optional</p>
     
     Example tool:
-    http://127.0.0.1:5000/static/index.html
+    http://127.0.0.1:3000/static/index.html
     
     <p>Available institutions:</p>
     <ul>"""

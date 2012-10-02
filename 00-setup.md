@@ -6,12 +6,13 @@ Here is everything necessary to get SPLURGE running on your own computer.
 
 You will need to install (Ubuntu commands in brackets):
 
-* PostgreSQL (`sudo apt-get intall postgresql`)
+* [PostgreSQL](http://www.postgresql.org/) (`sudo apt-get intall postgresql`)
 * PostgreSQL development libraries (`sudo apt-get install libpq-dev`)
-* Python (`sudo apt-get install python`)
+* [Python](http://www.python.org/) (`sudo apt-get install python`)
 * Python development libaries (`sudo apt-get install python-dev`)
-* `pip` (`sudo apt-get install python-pip`)
-* `psycopg2`, Python module for talking to PostgreSQL (`sudo pip install psycopg2`)
+* [`pip`](http://pypi.python.org/pypi/pip) (`sudo apt-get install python-pip`)
+* [`psycopg2`](http://www.initd.org/psycopg/), Python module for talking to PostgreSQL (`sudo pip install psycopg2`)
+* [`flask`](http://flask.pocoo.org/), a simple Python framework for web applications (`sudo pip install flask`)
 
 # Setting up PostgreSQL
 
@@ -68,8 +69,10 @@ This will take a while.
 
 # Running the web service
 
-To be added.
+    $ cd app/splurge/webapp
+	$ python splurge_webapp.py
 
+Then go to [http://localhost:3000/static/index.html](http://localhost:3000/static/index.html) and try it out.
 
 
 
