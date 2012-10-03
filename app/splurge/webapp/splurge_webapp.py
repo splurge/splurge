@@ -48,8 +48,8 @@ def splurge_service(isbn=None, institution_names=None, startYear=None, endYear=N
         
     filter = splurge.createTransactionFilter(institutions, startYear, endYear)
     if isbn == None or isbn=='random':
-      isbn = splurge.getRandomIsbn(filter)
-    records = splurge.getRecomends(isbn, filter)
+      isbn = splurge.getRandomISBN(filter)
+    records = splurge.getRecommendations(isbn, filter)
     return jsonify(isbn=isbn, institution_names=institution_names, institutionIds=institutions, startYear=startYear, endYear=endYear, results=records);
 
 if __name__ == "__main__":
