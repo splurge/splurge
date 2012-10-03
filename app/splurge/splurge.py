@@ -19,7 +19,7 @@ class Splurge:
   db_password = os.environ['SPLURGE_PASSWORD']
   logPath = os.path.join(os.path.dirname(__file__),"logs/")
   reIsbn = re.compile(r'''^([0-9]{13}|[0-9xX]{10})$''')
-  constr = "dbname='splurge' user='splurge_user' host='localhost' password='" + db_password + "'"
+  constr = "dbname='splurge' user='splurge_user' password='" + db_password + "'"
   conn = None
   cur = None
   
