@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+# You must set the environment variable SPLURGE_PASSWORD before running anything.
+# It is the Postgres password for user splurge_user.
+# In the examples it is splurge, so run this, for example, at a bash shell:
+# $ export SPLURGE_PASSWORD=splurge
+
 """
 # TODO: Make SQL injection safe!
 """
@@ -11,9 +16,10 @@ import psycopg2
 
 class Splurge:
 
+  db_password = os.environ['SPLURGE_PASSWORD']
   logPath = os.path.join(os.path.dirname(__file__),"logs/")
   reIsbn = re.compile(r'''^([0-9]{13}|[0-9xX]{10})$''')
-  constr = "dbname='splurge' user='splurge_user' host='localhost' password='splurge'"
+  constr = "dbname='splurge' user='splurge_user' host='localhost' password='" + db_password + "'"
   conn = None
   cur = None
   
