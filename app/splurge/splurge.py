@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
+# You must set the environment variable SPLURGE_PASSWORD before running anything.
+# It is the Postgres password for user splurge_user.
+# In the examples it is splurge, so run this, for example, at a bash shell:
+# $ export SPLURGE_PASSWORD=splurge
+
 """
-#TODO: make sql injection safe!
+# TODO: Make SQL injection safe!
 """
 
 import csv
@@ -11,9 +16,10 @@ import psycopg2
 
 class Splurge:
 
+  db_password = os.environ['SPLURGE_PASSWORD']
   logPath = os.path.join(os.path.dirname(__file__),"logs/")
   reIsbn = re.compile(r'''^([0-9]{13}|[0-9xX]{10})$''')
-  constr = "dbname='splurge' user='splurge_user' host='localhost' password='splurge'"
+  constr = "dbname='splurge' user='splurge_user' password='" + db_password + "'"
   conn = None
   cur = None
   
@@ -43,7 +49,7 @@ class Splurge:
     return self.cur.fetchall()
     
   def getInstitutionId(self,institution):
-    #TODO: make sql injection safe!
+    # TODO: Make SQL injection safe!
     self.cur.execute("select institution_id from institution where institution = '{0}'".format(institution))
     records = self.cur.fetchall()
     if records: 
@@ -114,7 +120,7 @@ class Splurge:
     os.system('sh data.pull.sh')
     
   def update_database_isbns(self):
-    print('\nupdate isbns\n================================')
+    print('\nUpdating ISBNs ...\n')
     path = os.path.join(os.path.dirname(__file__),"data/")
     for filename in os.listdir(path):
       file = os.path.join(path, filename)
@@ -123,7 +129,7 @@ class Splurge:
           self.insert_isbns_fromfile(file)
 
   def update_database_transactions(self):
-    print('\nupdate transactions\n================================')
+    print('\nUpdating transactions ...\n')
     path = os.path.join(os.path.dirname(__file__),"data/")
     for filename in os.listdir(path):
       file = os.path.join(path, filename)
@@ -149,9 +155,9 @@ class Splurge:
     if startYear and endYear: wheresql += " AND transaction_filterable.transact_time between to_timestamp('{0}','YYYY') and to_timestamp('{1}','YYYY')".format(startYear,endYear)
     return wheresql
     
-  def getRandomIsbn(self, sqlWhereTransactionFilter=''):
-    # NOTE: grabing 100 random transaction because some transaction dont link to an isbn /must have an import issue on some records/
-    # 100 random transactions minigates issue,, 
+  def getRandomISBN(self, sqlWhereTransactionFilter=''):
+    # NOTE: Grab 100 random transactions because some don't link to an ISBN (must have an import issue on some records)
+    # 100 random transactions mitigates the issue.
     # TODO: why do some transactions not have items?
     self.cur.execute("""
     select isbn from item, 
@@ -160,17 +166,17 @@ class Splurge:
     limit 1
     """.format(sqlWhereTransactionFilter))
     records = self.cur.fetchall()
-    return records[0][0]
+    return records
     
   """
-  given a book isbn and filter return recomends
+  Given an ISBN and filter, return recommendations.
   
-  NOTE: related isbns are group togeather and displayed...
-  forinstance if a related book foo has isbns A B C then A B C are each listed as recomendations when only one of the 3 would be interesting 
-  TODO: speed up query by using a collection of isbns that are related to one another
+  NOTE: related ISBNS are grouped together and displayed.
+  E.g. if a related book foo has ISBNs A B C then A B C are each listed as recommendations when only one of the three would be interesting.
+  TODO: speed up query by using a collection of ISBNs that are related to one another.
   """
-  def getRecomends(self,isbn=None, sqlWhereTransactionFilter=''):
-    if isbn is None: isbn = self.getRandomIsbn(sqlWhereTransactionFilter)
+  def getRecommendations(self, isbn=None, sqlWhereTransactionFilter=''):
+    if isbn is None: isbn = self.getRandomISBN(sqlWhereTransactionFilter)
     query = """
 SELECT isbn_lookup, isbn, poppop FROM 
   (SELECT isbn_lookup, item_no, institution, isbn, poppop, rank() OVER (PARTITION BY isbn_lookup, isbn_lookup ORDER BY poppop DESC, isbn ) from
@@ -226,9 +232,9 @@ WHERE final.rank < 20
     
   def test(self,isbn=None, sqlWhereTransactionFilter=''):
     if isbn is None:
-        isbn = self.getRandomIsbn(sqlWhereTransactionFilter)
+        isbn = self.getRandomISBN(sqlWhereTransactionFilter)
     print("Recommendations for {0}".format(isbn))
-    records = self.getRecomends(isbn,sqlWhereTransactionFilter)
+    records = self.getRecommendations(isbn,sqlWhereTransactionFilter)
     for record in records:
         print(record)
       

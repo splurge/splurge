@@ -8,6 +8,49 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+SET search_path = public, pg_catalog;
+
+DROP INDEX public.itemno_institution;
+DROP INDEX public.item_isbn;
+DROP INDEX public.backed_recomend_isbn_lookup;
+ALTER TABLE ONLY public.transaction DROP CONSTRAINT transaction_transact_time_item_no_patron_id_institutio_key;
+ALTER TABLE ONLY public.transaction DROP CONSTRAINT transaction_id_pkey;
+ALTER TABLE ONLY public.item DROP CONSTRAINT item_pkey;
+ALTER TABLE ONLY public.item DROP CONSTRAINT item_item_no_institution_isbn_key;
+ALTER TABLE ONLY public.institution DROP CONSTRAINT institution_pkey;
+ALTER TABLE ONLY public.institution DROP CONSTRAINT institution_institution_key;
+ALTER TABLE public.transaction ALTER COLUMN transaction_id DROP DEFAULT;
+ALTER TABLE public.item ALTER COLUMN item_id DROP DEFAULT;
+ALTER TABLE public.institution ALTER COLUMN institution_id DROP DEFAULT;
+DROP SEQUENCE public.transaction_transaction_id_seq;
+DROP TABLE public.transaction;
+DROP SEQUENCE public.relateditemcache_linked_institution_seq;
+DROP TABLE public.relateditemcache2;
+DROP TABLE public.relateditemcache;
+DROP TABLE public.related_isbn_item_cache;
+DROP SEQUENCE public.item_item_id_seq;
+DROP TABLE public.item;
+DROP SEQUENCE public.institution_institution_id_seq;
+DROP TABLE public.institution;
+DROP TABLE public.baked_recomends;
+DROP EXTENSION plpgsql;
+DROP SCHEMA public;
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
