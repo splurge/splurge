@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-## import the splurge library
 import sys
 sys.path.append("../")
 import splurge
@@ -12,6 +11,8 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 #app.config.from_pyfile('splurge_production.conf')
 app.config.from_pyfile('splurge.conf')
+
+app.debug = True
 
 @app.route("/splurge_service/")
 def hello():
@@ -32,8 +33,6 @@ def hello():
     out = out + """</ul></body></html>"""
     return out
 
-    
-    
 @app.route("/splurge_service_getinstitutions/", )
 def splurge_service_getinstitutions():
     return jsonify(institutions=splurge.getInstitutions());
