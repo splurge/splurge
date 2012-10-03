@@ -69,7 +69,6 @@ class Splurge:
     institution = basename.split('.')[0].split('-')[0]
     institutionId = self.getInstitutionId_or_create(institution)
     print(institution + '\t' + file)
-    print institutionId
     log = open(os.path.join(self.logPath,basename), 'w')
     row = None;
     try:
