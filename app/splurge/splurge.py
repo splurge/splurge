@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-#TODO: make sql injection safe!
+# TODO: Make SQL injection safe!
 """
 
 import csv
@@ -43,7 +43,7 @@ class Splurge:
     return self.cur.fetchall()
     
   def getInstitutionId(self,institution):
-    #TODO: make sql injection safe!
+    # TODO: Make SQL injection safe!
     self.cur.execute("select institution_id from institution where institution = '{0}'".format(institution))
     records = self.cur.fetchall()
     if records: 
@@ -150,8 +150,8 @@ class Splurge:
     return wheresql
     
   def getRandomIsbn(self, sqlWhereTransactionFilter=''):
-    # NOTE: grabing 100 random transaction because some transaction dont link to an isbn /must have an import issue on some records/
-    # 100 random transactions minigates issue,, 
+    # NOTE: Grab 100 random transactions because some don't link to an ISBN (must have an import issue on some records)
+    # 100 random transactions mitigates the issue.
     # TODO: why do some transactions not have items?
     self.cur.execute("""
     select isbn from item, 
@@ -163,11 +163,11 @@ class Splurge:
     return records
     
   """
-  given a book isbn and filter return recomends
+  Given an ISBN and filter, return recommendations.
   
-  NOTE: related isbns are group togeather and displayed...
-  forinstance if a related book foo has isbns A B C then A B C are each listed as recomendations when only one of the 3 would be interesting 
-  TODO: speed up query by using a collection of isbns that are related to one another
+  NOTE: related ISBNS are grouped together and displayed.
+  Eg if a related book foo has isbns A B C then A B C are each listed as recomendations when only one of the 3 would be interesting 
+  TODO: speed up query by using a collection of ISBNs that are related to one another
   """
   def getRecomends(self,isbn=None, sqlWhereTransactionFilter=''):
     if isbn is None: isbn = self.getRandomIsbn(sqlWhereTransactionFilter)

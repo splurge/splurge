@@ -17,11 +17,11 @@ if args.update_database_isbns: splurge.update_database_isbns()
 if args.update_database_transactions: splurge.update_database_transactions()
 
 if args.test:
-  # show recomends for a random isbn(None) from Institution york between the years ...
-  #splurge.test2(None, splurge.createTransactionFilter(splurge.getInstitutionId('york'),'1985','2014') )
-  # show 
-  #splurge.test2('9781552211281', splurge.createTransactionFilter(splurge.getInstitutionId('waterloo')) )
-  #splurge.test2('9781552211281')
-  # random isbn test
+  # Show recommendations for a random isbn(None) from Institution york between the years ...
+  # splurge.test2(None, splurge.createTransactionFilter(splurge.getInstitutionId('york'),'1985','2014') )
+  # Other possibilities:
+  # splurge.test2('9781552211281', splurge.createTransactionFilter(splurge.getInstitutionId('waterloo')) )
+  # splurge.test2('9781552211281')
+  # Random ISBN test
   for i in range(4):
     splurge.test()
