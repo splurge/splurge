@@ -72,8 +72,6 @@ Run this:
 
     $ cd app/splurge
 	$ ./tool.py --update_database
-    $ ./tool.py --update_database_isbns
-	$ ./tool.py --update_database_transactions
 	
 This will take a while.	
 
