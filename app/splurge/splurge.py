@@ -160,7 +160,7 @@ class Splurge:
     limit 1
     """.format(sqlWhereTransactionFilter))
     records = self.cur.fetchall()
-    return records[0][0]
+    return records
     
   """
   given a book isbn and filter return recomends
