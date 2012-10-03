@@ -25,7 +25,7 @@ You will need to install some software packages to use SPLURGE. (Ubuntu commands
 * [`psycopg2`](http://www.initd.org/psycopg/), Python module for talking to PostgreSQL (`sudo pip install psycopg2`)
 * [`flask`](http://flask.pocoo.org/), a simple Python framework for web applications (`sudo pip install flask`)
 
-# Setting up PostgreSQL
+## Setting up PostgreSQL
 
 First, install it, for example on Ubuntu (see [Ubuntu documentation on PostgreSQL](https://help.ubuntu.com/community/PostgreSQL) for full details, and your own documentation if you use a different operating system)
 
