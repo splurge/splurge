@@ -120,7 +120,7 @@ class Splurge:
     os.system('sh data.pull.sh')
     
   def update_database_isbns(self):
-    print('\nupdate isbns\n================================')
+    print('\nUpdating ISBNs ...\n')
     path = os.path.join(os.path.dirname(__file__),"data/")
     for filename in os.listdir(path):
       file = os.path.join(path, filename)
@@ -129,7 +129,7 @@ class Splurge:
           self.insert_isbns_fromfile(file)
 
   def update_database_transactions(self):
-    print('\nupdate transactions\n================================')
+    print('\nUpdating transactions ...\n')
     path = os.path.join(os.path.dirname(__file__),"data/")
     for filename in os.listdir(path):
       file = os.path.join(path, filename)
@@ -155,7 +155,7 @@ class Splurge:
     if startYear and endYear: wheresql += " AND transaction_filterable.transact_time between to_timestamp('{0}','YYYY') and to_timestamp('{1}','YYYY')".format(startYear,endYear)
     return wheresql
     
-  def getRandomIsbn(self, sqlWhereTransactionFilter=''):
+  def getRandomISBN(self, sqlWhereTransactionFilter=''):
     # NOTE: Grab 100 random transactions because some don't link to an ISBN (must have an import issue on some records)
     # 100 random transactions mitigates the issue.
     # TODO: why do some transactions not have items?
@@ -172,11 +172,11 @@ class Splurge:
   Given an ISBN and filter, return recommendations.
   
   NOTE: related ISBNS are grouped together and displayed.
-  Eg if a related book foo has isbns A B C then A B C are each listed as recomendations when only one of the 3 would be interesting 
-  TODO: speed up query by using a collection of ISBNs that are related to one another
+  E.g. if a related book foo has ISBNs A B C then A B C are each listed as recommendations when only one of the three would be interesting.
+  TODO: speed up query by using a collection of ISBNs that are related to one another.
   """
-  def getRecomends(self,isbn=None, sqlWhereTransactionFilter=''):
-    if isbn is None: isbn = self.getRandomIsbn(sqlWhereTransactionFilter)
+  def getRecommendations(self, isbn=None, sqlWhereTransactionFilter=''):
+    if isbn is None: isbn = self.getRandomISBN(sqlWhereTransactionFilter)
     query = """
 SELECT isbn_lookup, isbn, poppop FROM 
   (SELECT isbn_lookup, item_no, institution, isbn, poppop, rank() OVER (PARTITION BY isbn_lookup, isbn_lookup ORDER BY poppop DESC, isbn ) from
@@ -232,9 +232,9 @@ WHERE final.rank < 20
     
   def test(self,isbn=None, sqlWhereTransactionFilter=''):
     if isbn is None:
-        isbn = self.getRandomIsbn(sqlWhereTransactionFilter)
+        isbn = self.getRandomISBN(sqlWhereTransactionFilter)
     print("Recommendations for {0}".format(isbn))
-    records = self.getRecomends(isbn,sqlWhereTransactionFilter)
+    records = self.getRecommendations(isbn,sqlWhereTransactionFilter)
     for record in records:
         print(record)
       

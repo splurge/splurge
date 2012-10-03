@@ -3,9 +3,9 @@
 import splurge
 import argparse
 parser = argparse.ArgumentParser(description='Process Splurge.')
-parser.add_argument('--update_csvfiles', action='store_true', help='refresh ./data with ftp data')
+parser.add_argument('--update_csvfiles', action='store_true', help='refresh ./data with FTP data')
 parser.add_argument('--update_database', action='store_true', help='read all ./data into database tables')
-parser.add_argument('--update_database_isbns', action='store_true', help='read isbns data into database')
+parser.add_argument('--update_database_isbns', action='store_true', help='read ISBN data into database')
 parser.add_argument('--update_database_transactions', action='store_true', help='read transactions into database')
 parser.add_argument('--test', action='store_true')
 args = parser.parse_args()
