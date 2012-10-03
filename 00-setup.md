@@ -60,7 +60,7 @@ The password for splurge_user needs to be set in the `SPLURGE_PASSWORD` environm
 	
 Test that it was set properly by running
 
-    $ echo SPLURGE_PASSWORD
+    $ echo $SPLURGE_PASSWORD
 
 # Loading in data
 
