@@ -54,6 +54,8 @@ If you get an error like this:
 
 then follow the instructions at [Get Postgres working on Ubuntu or Linux Mint](http://blog.deliciousrobots.com/2011/12/13/get-postgres-working-on-ubuntu-or-linux-mint/).
 
+If you ever need to reset the splurge database back to zero and start over, run this command again.
+
 The password for splurge_user needs to be set in the `SPLURGE_PASSWORD` environment variable before running anything more. (This makes it easier to share code.) Before going on, run this (if you use bash) but, of course, use whatever password you set:
 
     $ export SPLURGE_PASSWORD=splurge
