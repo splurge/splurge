@@ -7,6 +7,7 @@ import splurge
 splurge = splurge.Splurge()
 
 from flask import Flask, jsonify, request
+import simplejson as json
 
 app = Flask(__name__)
 #app.config.from_pyfile('splurge_production.conf')
