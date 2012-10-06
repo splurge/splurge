@@ -15,7 +15,7 @@ $(function() {
             console.log(alldata);
             $('#box').empty();
             var imgurl = "http://covers.openlibrary.org/b/ISBN/" + alldata.isbn + "-M.jpg";
-            $('#box').append('<img src="' + imgurl + '" width="75" height="75" alt="" /><br/>');
+            $('#box').append('<img src="' + imgurl + '" height="75" alt="" /><br/>');
             $('#box').append("<h4>Results for: " + alldata.isbn + "</h4><hr/>");
                     
             for (i = 0; i < alldata.results.length; i++) {
@@ -23,7 +23,7 @@ $(function() {
                 console.log(data);
                 //$('#box').append(data);
                 var imgurl = "http://covers.openlibrary.org/b/ISBN/" + data[1] + "-M.jpg";
-                $('#box').append('<img src="' + imgurl + '" width="75" height="75" alt="" />Rank: <b>' + data[2] + '</b> ISBN:' + data[1] + '<br/>');
+                $('#box').append('<img src="' + imgurl + '" height="75" alt="" />Rank: <b>' + data[2] + '</b> ISBN:' + data[1] + '<br/>');
             }
         });
     });
