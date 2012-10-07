@@ -1,3 +1,6 @@
 *
 !.gitignore
-
+!one.items.txt
+!one.transactions.txt
+!two.items.txt
+!two.transactions.txt

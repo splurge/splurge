@@ -1,0 +1,4 @@
+500001	0374270325	A Man In Full	Wolfe, Tom	Farrar, Strous and Giroux	1998	https://www.library.yorku.ca/find/Record/1412028
+500002	9780674991453	Discourses, Books 1-2	Epictetus	Loeb	1925	http://go.utlib.ca/cat/7027106   
+500003	9780674992405	Discourses, Books 3-4	Epictetus	Loeb	1925	http://go.utlib.ca/cat/7027106
+500004	0521482631	Stoic Studies	Long, A.A.	Cambridge University Press	1996	http://go.utlib.ca/cat/1935953
