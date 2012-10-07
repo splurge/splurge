@@ -1,0 +1,29 @@
+body {
+  background: white;
+  color: black;
+  min-width: 780px;
+  max-width: 1024px;
+  margin: auto;
+  padding-left: 4em;
+  padding-right: 4em;
+  font-family: sans-serif;
+}
+
+h1 {
+  color: black;
+  font-weight: normal;
+  font-size: 150%;
+  text-align: center;
+  /* font-variant: small-caps; */
+}
+
+div#original {
+  float: right;
+}
+
+div.cover {
+  display: block;
+  float: left;
+  margin-right: 10px;
+}
+

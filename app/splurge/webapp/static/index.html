@@ -2,36 +2,49 @@
 <html>
 <head>
 <title>SPLURGE Widget</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script type="text/javascript" src="init.js"></script>
+<link rel="stylesheet" type="text/css" href="splurge.css" />
 </head>
 
 <body>
 <h1>SPLURGE!</h1>
-  
-<p>Example ISBNs to paste in: 0023110465, 0787974668, 0802037925, 0948080604, random (or choose your own)</p>
 
-ISBN: <input id="isbn" type="text" value="9780538733410"/>
-  
-<p>Only use records from a given institution: <div id="institution_list">  <!-- results --> </div>  </p>
+<p> 
+Demonstration interface of the Scholars Portal Library Usage-based Recommendation Generation Engine.
+</p>
 
-Institution(s): <input id="institutions" type="text" value="any"/>
-  
+<div id="original"><!-- Book cover of ISBN entered goes here --></div>
+
 <p>
 
-Restrict to a given year range:
+ISBN: <input id="isbn" type="text" value="0679723951" /> (try 0679723951, 9780140137941, 0374270325, 9780674991453, or random)
 
 </p>
 
-startDate: <input id="startDate" type="text" value="2000"/>
-endDate:   <input id="endDate" type="text" value="2020"/>
+<p>
 
-<br />
+Institution(s): <input id="institutions" type="text" value="any" /> (from [<span id="institution_list">  <!-- results -->  </span>])
   
-<button id="go" type="button">Find recommendations</button>
+<p>
+
+Date range: between <input id="startDate" type="text" value="2000" size="4" /> and <input id="endDate" type="text" value="2020" size="4" />
+
+</p>
+
+<p>
+  
+<button id="go" type="button">Get recommendations</button>
+
+</p>
+
+<div style="clear: both;"></div>
+
+<hr />
   
 <div id="box">
-   <!-- results -->
+<!-- results -->
 </div>
+
 </body>
 </html>
