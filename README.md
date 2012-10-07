@@ -99,7 +99,7 @@ TODO: Add test data to the repo so this works out of the box for non-developers.
 Run this:
 
     $ cd app/splurge
-	$ ./tool.py --update_database
+    $ ./tool.py --update_database
 	
 This will take a while.	
 
@@ -110,7 +110,7 @@ Test it:
 ## Running the web service
 
     $ cd webapp
-	$ python splurge_webapp.py
+    $ ./splurge_webapp.py
 
 Then go to [http://localhost:3000/static/index.html](http://localhost:3000/static/index.html) and try it out.
 
@@ -118,17 +118,10 @@ The service is running at [http://localhost:3000/splurge_service/](http://localh
 
 ## Test ISBNs
 
-* 0321643720      
-* 9780321643728   
-* 0273713248      
-* 9780273713241   
-* 0763766321      
-* 9780763766320   
-* 0176501657      
-* 9780176501655   
-* 9780538733410   
-* 9781412974882   
-* 0773502424
+* 0679723951
+* 9780140137941
+* 0374270325
+* 9780674991453
 
 # TO DO
 
