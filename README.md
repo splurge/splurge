@@ -92,16 +92,14 @@ Download SPLURGE from the [https://github.com/splurge/splurge.git](https://githu
 
 ## Loading in data
 
-This assumes that you're a developer and have downloaded all of the data files from Scholars Portal into the `app/splurge/data/` directory.
-
-TODO: Add test data to the repo so this works out of the box for non-developers.
+Some test data comes with the code, in the `app/splurge/data/` directory.  (If you're at an Ontario university library you can download data files from the Scholars Portal server.)
 
 Run this:
 
     $ cd app/splurge
     $ ./tool.py --update_database
 	
-This will take a while.	
+The test data will load quickly but real data sets, with hundreds of thousands of transactions, will take a while.
 
 Test it:
 
