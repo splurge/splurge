@@ -27,3 +27,11 @@ div.cover {
   margin-right: 10px;
 }
 
+div#recommendations {
+  margin: 0 20px;    
+  padding: 10px;
+}
+
+button#go {
+  padding: 10px 15px;
+}

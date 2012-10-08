@@ -13,7 +13,7 @@ $(function() {
         var url = '../splurge_service/' + $('#isbn').val() + '/' + $('#institutions').val() + '/' + $('#startDate').val() + '/'+ $('#endDate').val() + '/';
         $.getJSON(url, function(alldata) {
             console.log(alldata);
-            $('#box').empty();
+            $('#recommendations').empty();
             $('#original').empty();
             var imgurl = "http://covers.openlibrary.org/b/ISBN/" + alldata.isbn + "-M.jpg";
             $('#original').append('<div class="cover"><img src="' + imgurl + '" height="100" alt="" /> <br /> ' + alldata.isbn + '</div>');
@@ -22,9 +22,10 @@ $(function() {
             for (i = 0; i < alldata.results.length; i++) {
                 var data = alldata.results[i];
                 console.log(data);
-                //$('#box').append(data);
+                //$('#recommendations').append(data);
                 var imgurl = "http://covers.openlibrary.org/b/ISBN/" + data[1] + "-M.jpg";
-                $('#box').append('<div class="cover"><img src="' + imgurl + '" height="200" alt="" /> <br /> Rank: ' + data[2] + '<br />' + data[1] + '</div>');
+                $('#recommendations').append('<div class="cover"><img src="' + imgurl + '" height="200" alt="" /> <br /> Rank: ' + data[2] + '<br />' + data[1] + '</div>');
+		$('#recommendations').resize();
             }
         });
     });
