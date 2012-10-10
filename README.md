@@ -120,8 +120,7 @@ Test it:
 
 ## Running the web service
 
-    $ cd webapp
-	$ python splurge_webapp.py
+    $ ./tool.py --little_server
 
 Then go to [http://localhost:3000/static/index.html](http://localhost:3000/static/index.html) and try it out.
 
