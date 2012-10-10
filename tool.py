@@ -21,7 +21,7 @@ splurge = splurge.Splurge(
 )
 
 if args.update_database: splurge.load_institution_updates()
-if args.update_database: splurge.old_update_database()
+if args.old_update_database: splurge.old_update_database()
 
 if args.test:
   # Show recommendations for a random isbn(None) from Institution york between the years ...
