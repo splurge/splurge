@@ -46,7 +46,7 @@ class AppSplurge():
   def install(self):
     self._rebuild_hosts()
     self._rebuild_templates()
-    !sudo apt-get install python-flask
+    !sudo apt-get install python-flask python-simplejson 
     WebServiceApache2Debian().install_service_load_balancer()
     WebServiceApache2Debian().install_service_wsgi()
     self.webapp.install()

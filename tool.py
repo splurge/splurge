@@ -4,6 +4,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Process Splurge.')
 parser.add_argument('--update_database', action='store_true', help='read all ./data into database tables')
 parser.add_argument('--old_update_database', action='store_true', help='read all ./data into database tables')
+parser.add_argument('--little_server', action='store_true', help='start a simple server')
 parser.add_argument('--test', action='store_true')
 args = parser.parse_args()
 
@@ -22,6 +23,12 @@ splurge = splurge.Splurge(
 
 if args.update_database: splurge.load_institution_updates()
 if args.old_update_database: splurge.old_update_database()
+if args.little_server:
+  os.environ['SPLURGE_ROOT_APP_PATH'] = root_app_path
+  file = os.environ['SPLURGE_ROOT_APP_PATH'] + '/website/splurge/splurge_webapp.py'
+  os.system("python " + file)
+  
+
 
 if args.test:
   # Show recommendations for a random isbn(None) from Institution york between the years ...
