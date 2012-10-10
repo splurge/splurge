@@ -51,7 +51,7 @@ Sample:
     1997-12-17T07:37:16  →  103828  →  6A7H8B90   (BAD - not an integer)
     1997-12-17T07:37:16-08  →  ABC280   →  76543  (BAD - not an integer)
 
-* The timestamp is in Unix time format (i.e. the number of seconds since 1st Jan 1970 UTC). It is used to calculate the day the transaction occurred on.
+* The timestamp is in format http://en.wikipedia.org/wiki/ISO_8601
 * The itemId is whatever ID you want to use to identify a library book. It must match the itemId contained in the item file.
 * The userId is whatever ID you want to use to identify an individual library user. This value must be an integer and if requiring some redirection use something like XOR to scramble the userId.
 * Any userId anonymizing must be consistent across all your data uploads!
