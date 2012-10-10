@@ -13,7 +13,7 @@ Here is everything necessary to get SPLURGE running on your own computer.
 If you wish to skip creating you databae and webserver you can use the manage.splurge.ipy.sh tool.
 Be sure to git clone --recursive to include submodule ipython
 
-Using the manage script for tested on *buntu:
+Using the manage script (tested on *buntu):
 
     . ./set_password.sh
     ./manage.splurge.ipy.sh
