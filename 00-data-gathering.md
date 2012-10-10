@@ -16,7 +16,7 @@ These changes will solve streaming issues we would hit when adding new files to 
 When uploading files to the ftp first create a temporarily folder tmp! After the upload is complete rename the tmp folder to the timestamp. WHY? because if the server starts to process the data before you finished uploading we will have missing records.
 
 * Only new timestamps for your institution grater then the previously processed timestamp will be used to update the database.
-* Duplicate records are ignored but frowned upon. 
+* Duplicate records will likly cause error and prevent proccessing. 
 
 `FTP/[institution]/[tmp|date]/items.txt`
 
