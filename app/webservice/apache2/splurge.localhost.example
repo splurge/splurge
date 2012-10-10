@@ -1,0 +1,79 @@
+####################
+# !! Built from a template file.  You should edit the master template then rebuild.
+# Template file: /home/s8weber/svc/splurge/app//webservice/apache2/splurge.localhost.manage_template
+####################
+
+## force https
+#NameVirtualHost *:80
+<VirtualHost *:80>
+  ServerName splurge.localhost
+  <Location />
+    RewriteEngine on
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} 
+  </Location>
+</VirtualHost>
+
+## proxy balancer
+NameVirtualHost *:443
+<VirtualHost *:443>
+  ServerName splurge.localhost
+  #ErrorLog ${APACHE_LOG_DIR}/error.log
+  #CustomLog ${APACHE_LOG_DIR}/ssl.access.log combined
+  SSLEngine on
+  SSLCertificateFile /home/s8weber/svc/splurge/app//webservice/server.crt
+  SSLCertificateKeyFile /home/s8weber/svc/splurge/app//webservice/server.key
+  <FilesMatch "\.(cgi|shtml|phtml|php)$">
+    SSLOptions +StdEnvVars
+  </FilesMatch>
+  <Directory /usr/lib/cgi-bin>
+    SSLOptions +StdEnvVars
+  </Directory>
+  BrowserMatch "MSIE [2-6]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
+  BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+  
+  ## PROXY balancer ##
+  # sudo apt-get install libapache2-mod-proxy-html
+  # sudo a2enmod proxy_balancer
+  # sudo a2enmod headers
+  Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+  <Proxy balancer://ssl.splurge.localhost/>
+    BalancerMember https://p0.splurge.localhost:44300/ route=3
+    BalancerMember https://p1.splurge.localhost:44301/ route=1
+    BalancerMember https://p2.splurge.localhost:44302/ route=2
+    ProxySet stickysession=ROUTEID
+  </Proxy>
+  ProxyRequests Off
+  ProxyPreserveHost On
+  SSLProxyEngine On
+  ProxyPass / balancer://ssl.splurge.localhost/
+  ProxyPassReverse / balancer://ssl.splurge.localhost/
+  ProxyPassReverseCookieDomain balancer://ssl.splurge.localhost/ splurge.localhost
+  ProxyPassReverseCookiePath / /
+</VirtualHost>
+
+
+## default balancer
+Listen 44300
+<VirtualHost *:44300>
+  ServerName p0.splurge.localhost
+  DocumentRoot /var/www/splurge.localhost/
+  SSLEngine on
+  SSLCertificateFile /home/s8weber/svc/splurge/app//webservice/server.crt
+  SSLCertificateKeyFile /home/s8weber/svc/splurge/app//webservice/server.key
+  
+    WSGIDaemonProcess splurge.localhost user=s8weber group=s8weber processes=3 threads=10
+    #WSGIDaemonProcess splurge.localhost processes=3 threads=10
+
+    WSGIScriptAlias / /home/s8weber/svc/splurge/app//webservice/wsgi
+
+    <Directory />
+        WSGIProcessGroup splurge.localhost
+        WSGIApplicationGroup %{GLOBAL}
+        SetEnv SPLURGE_ROOT_APP_PATH /home/s8weber/svc/splurge/app/
+        SetEnv SPLURGE_DB_PASSWORD XXXXXXXXXXXXXX
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+</VirtualHost>

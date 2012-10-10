@@ -1,0 +1,18 @@
+####################
+# !! Built from a template file.  You should edit the master template then rebuild.
+# Template file: /home/s8weber/svc/splurge/app//webservice/apache2/simple.splurge.localhost.manage_template
+####################
+
+#WSGIDaemonProcess splurge.localhost user=s8weber group=s8weber processes=3 threads=10
+WSGIDaemonProcess splurge.localhost processes=3 threads=10
+
+WSGIScriptAlias / /home/s8weber/svc/splurge/app//webservice/wsgi
+
+<Directory /var/www/splurge.localhost/>
+    WSGIProcessGroup splurge.localhost
+    WSGIApplicationGroup %{GLOBAL}
+    SetEnv SPLURGE_ROOT_APP_PATH /home/s8weber/svc/splurge/app/
+    SetEnv SPLURGE_DB_PASSWORD XXXXXXXXXXXXXX
+    Order deny,allow
+    Allow from all
+</Directory>

@@ -1,0 +1,26 @@
+#!/usr/bin/python
+
+# !! Built from a template file.  You should edit the master template then rebuild.
+# Template file: /home/s8weber/svc/splurge/app//webservice/wsgi.manage_template
+
+import sys
+import os
+
+'''
+failed attempt to pass wsgi environ data to flask :(
+so im going to create a template with the values filled in..
+
+def application(environ, start_request):
+    if 'SPLURGE_ROOT_APP_PATH' in environ:
+        os.environ['SPLURGE_ROOT_APP_PATH'] = environ['SPLURGE_ROOT_APP_PATH']
+    if 'SPLURGE_DB_PASSWORD' in environ:                                           
+        os.environ['SPLURGE_DB_PASSWORD'] = environ['SPLURGE_DB_PASSWORD']
+    sys.path.insert(0, os.environ['SPLURGE_ROOT_APP_PATH'] + '/website/splurge')
+    from splurge_webapp import app as application
+'''
+
+os.environ['SPLURGE_ROOT_APP_PATH'] = '/home/s8weber/svc/splurge/app/'
+os.environ['SPLURGE_DB_PASSWORD'] = 'XXXXXXXXXXXXXX'
+sys.path.insert(0, os.environ['SPLURGE_ROOT_APP_PATH'] + '/website/splurge')
+
+from splurge_webapp import app as application
