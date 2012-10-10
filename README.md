@@ -12,6 +12,7 @@ Here is everything necessary to get SPLURGE running on your own computer.
 
 Be sure to git clone --recursive to include submodule ipython
 Using scripts:
+
     . ./set_password.sh
     ./manage.splurge.ipy.sh
     app.install()
