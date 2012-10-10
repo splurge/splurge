@@ -10,13 +10,15 @@ SPLURGE will collect usage data from OCUL members and build a recommendation eng
 
 Here is everything necessary to get SPLURGE running on your own computer.
 
+Be sure to git clone --recursive to include submodule ipython
 Using scripts:
-./manage.splurge.ipy.sh
-app.install()
-https://splurge.localhost/splurge_service/
+    . ./set_password.sh
+    ./manage.splurge.ipy.sh
+    app.install()
+    https://splurge.localhost/splurge_service/
 
 
-Or:: other way
+Or.......
 
 (As of 1 October 2012: Incomplete.)
 
