@@ -10,16 +10,17 @@ SPLURGE will collect usage data from OCUL members and build a recommendation eng
 
 Here is everything necessary to get SPLURGE running on your own computer.
 
+If you wish to skip creating you databae and webserver you can use the manage.splurge.ipy.sh tool.
 Be sure to git clone --recursive to include submodule ipython
-Using scripts:
+
+Using the manage script for tested on *buntu:
 
     . ./set_password.sh
     ./manage.splurge.ipy.sh
     app.install()
     https://splurge.localhost/splurge_service/
 
-
-Or.......
+An other option is to manualy download the packages and configure the services.
 
 (As of 1 October 2012: Incomplete.)
 
