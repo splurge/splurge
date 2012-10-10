@@ -1,0 +1,5 @@
+wsgi
+apache2/*
+nginx/*
+!apache2/*.manage_template
+!nginx/*.manage_template

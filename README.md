@@ -10,6 +10,14 @@ SPLURGE will collect usage data from OCUL members and build a recommendation eng
 
 Here is everything necessary to get SPLURGE running on your own computer.
 
+Using scripts:
+./manage.splurge.ipy.sh
+app.install()
+https://splurge.localhost/splurge_service/
+
+
+Or:: other way
+
 (As of 1 October 2012: Incomplete.)
 
 ## Required packages 
@@ -57,7 +65,7 @@ Note that the password is set to "splurge". For your local testing, this is fine
 
 Now set up the database:
 
-    psql -d splurge -U splurge_user -W < setup.sql 
+    psql -d splurge -U splurge_user -W < app/db/schema_dump.sql 
     
 If you get an error like this:
 
@@ -73,15 +81,15 @@ Later, if you want to dump out the database, run
 
 ## Set the SPLURGE_USER environment variable
 
-The password for splurge_user needs to be set in the `SPLURGE_PASSWORD` environment variable before running anything more. (This makes it easier to share code.) Before going on, run this (if you use bash) but, of course, use whatever password you set:
+The password for splurge_user needs to be set in the `SPLURGE_DB_PASSWORD` environment variable before running anything more. (This makes it easier to share code.) Before going on, run this (if you use bash) but, of course, use whatever password you set:
 
-    $ export SPLURGE_PASSWORD=splurge
+    $ export SPLURGE_DB_PASSWORD=splurge
 
 You could add this line to a login file such as `.bashrc`.
 
 Test that it was set properly by running
 
-    $ echo $SPLURGE_PASSWORD
+    $ echo $SPLURGE_DB_PASSWORD
 
 ## Download SPLURGE
 
@@ -92,14 +100,16 @@ Download SPLURGE from the [https://github.com/splurge/splurge.git](https://githu
 
 ## Loading in data
 
-Some test data comes with the code, in the `app/splurge/data/` directory.  (If you're at an Ontario university library you can download data files from the Scholars Portal server.)
+This assumes that you're a developer and have downloaded all of the data files from Scholars Portal into the `app/splurge/data/` directory.
+
+TODO: Add test data to the repo so this works out of the box for non-developers.
 
 Run this:
 
     $ cd app/splurge
-    $ ./tool.py --update_database
+	$ ./tool.py --update_database
 	
-The test data will load quickly but real data sets, with hundreds of thousands of transactions, will take a while.
+This will take a while.	
 
 Test it:
 
@@ -108,7 +118,7 @@ Test it:
 ## Running the web service
 
     $ cd webapp
-    $ ./splurge_webapp.py
+	$ python splurge_webapp.py
 
 Then go to [http://localhost:3000/static/index.html](http://localhost:3000/static/index.html) and try it out.
 
@@ -116,10 +126,17 @@ The service is running at [http://localhost:3000/splurge_service/](http://localh
 
 ## Test ISBNs
 
-* 0679723951
-* 9780140137941
-* 0374270325
-* 9780674991453
+* 0321643720      
+* 9780321643728   
+* 0273713248      
+* 9780273713241   
+* 0763766321      
+* 9780763766320   
+* 0176501657      
+* 9780176501655   
+* 9780538733410   
+* 9781412974882   
+* 0773502424
 
 # TO DO
 

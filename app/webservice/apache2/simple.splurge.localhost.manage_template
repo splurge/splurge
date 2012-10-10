@@ -1,0 +1,25 @@
+####################
+# """+ Helper.render_template_warn('''
+
+This is a template file
+=================================
+From this template file you can run raw python and include variables.
+Use syntex """+ app.root_app_path +""" to substitute in a value.
+
+''') +"""
+# Template file: """+ infile +"""
+####################
+
+#WSGIDaemonProcess """+ app.hostname +""" user="""+ app.whoami +""" group="""+ app.whoami +""" processes=3 threads=10
+WSGIDaemonProcess """+ app.hostname +""" processes=3 threads=10
+
+WSGIScriptAlias / """+ app.root_app_path +"""/webservice/wsgi
+
+<Directory """+ app.webapp.website.www_path +""">
+    WSGIProcessGroup """+ app.hostname +"""
+    WSGIApplicationGroup %{GLOBAL}
+    SetEnv SPLURGE_ROOT_APP_PATH """+ app.root_app_path +"""
+    SetEnv SPLURGE_DB_PASSWORD """+ app.webapp.db.password +"""
+    Order deny,allow
+    Allow from all
+</Directory>

@@ -1,0 +1,3 @@
+[submodule "manage/ipython"]
+	path = manage/ipython
+	url = https://github.com/ipython/ipython.git

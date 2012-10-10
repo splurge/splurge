@@ -1,0 +1,86 @@
+####################
+# """+ Helper.render_template_warn('''
+
+This is a template file
+=================================
+From this template file you can run raw python and include variables.
+Use syntex """+ app.root_app_path +""" to substitute in a value.
+
+''') +"""
+# Template file: """+ infile +"""
+####################
+
+## force https
+#NameVirtualHost *:80
+<VirtualHost *:80>
+  ServerName """+ app.hostname +"""
+  <Location />
+    RewriteEngine on
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} 
+  </Location>
+</VirtualHost>
+
+## proxy balancer
+NameVirtualHost *:443
+<VirtualHost *:443>
+  ServerName """+ app.hostname +"""
+  #ErrorLog ${APACHE_LOG_DIR}/error.log
+  #CustomLog ${APACHE_LOG_DIR}/ssl.access.log combined
+  SSLEngine on
+  SSLCertificateFile """+ app.root_app_path +"""/webservice/server.crt
+  SSLCertificateKeyFile """+ app.root_app_path +"""/webservice/server.key
+  <FilesMatch "\.(cgi|shtml|phtml|php)$">
+    SSLOptions +StdEnvVars
+  </FilesMatch>
+  <Directory /usr/lib/cgi-bin>
+    SSLOptions +StdEnvVars
+  </Directory>
+  BrowserMatch "MSIE [2-6]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
+  BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+  
+  ## PROXY balancer ##
+  # sudo apt-get install libapache2-mod-proxy-html
+  # sudo a2enmod proxy_balancer
+  # sudo a2enmod headers
+  Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+  <Proxy balancer://ssl."""+ app.hostname +"""/>
+    BalancerMember https://p0."""+ app.hostname +""":44300/ route=3
+    BalancerMember https://p1."""+ app.hostname +""":44301/ route=1
+    BalancerMember https://p2."""+ app.hostname +""":44302/ route=2
+    ProxySet stickysession=ROUTEID
+  </Proxy>
+  ProxyRequests Off
+  ProxyPreserveHost On
+  SSLProxyEngine On
+  ProxyPass / balancer://ssl."""+ app.hostname +"""/
+  ProxyPassReverse / balancer://ssl."""+ app.hostname +"""/
+  ProxyPassReverseCookieDomain balancer://ssl."""+ app.hostname +"""/ """+ app.hostname +"""
+  ProxyPassReverseCookiePath / /
+</VirtualHost>
+
+
+## default balancer
+Listen 44300
+<VirtualHost *:44300>
+  ServerName p0."""+ app.hostname +"""
+  DocumentRoot """+ app.webapp.website.www_path +"""
+  SSLEngine on
+  SSLCertificateFile """+ app.root_app_path +"""/webservice/server.crt
+  SSLCertificateKeyFile """+ app.root_app_path +"""/webservice/server.key
+  
+    WSGIDaemonProcess """+ app.hostname +""" user="""+ app.whoami +""" group="""+ app.whoami +""" processes=3 threads=10
+    #WSGIDaemonProcess """+ app.hostname +""" processes=3 threads=10
+
+    WSGIScriptAlias / """+ app.root_app_path +"""/webservice/wsgi
+
+    <Directory />
+        WSGIProcessGroup """+ app.hostname +"""
+        WSGIApplicationGroup %{GLOBAL}
+        SetEnv SPLURGE_ROOT_APP_PATH """+ app.root_app_path +"""
+        SetEnv SPLURGE_DB_PASSWORD """+ app.webapp.db.password +"""
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+</VirtualHost>

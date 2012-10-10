@@ -1,3 +1,0 @@
-1000001	0679723951	Memories, Dreams, Reflections	Jung, C.G.	Vintage	1989	https://www.library.yorku.ca/find/Record/902412
-1000002	0691090254	Psychology of the Unconscious	Jung, C.G.	Princeton University Press	2001	https://www.library.yorku.ca/find/Record/1579105
-1000003	9780140137941	The Interpretation of Dreams	Freud, Sigmund	Penguin	1976	https://www.library.yorku.ca/find/Record/220009

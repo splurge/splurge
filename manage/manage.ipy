@@ -1,0 +1,324 @@
+#! /usr/bin/env ipython
+
+''' Version 1.3 '''
+''' use the basic functions or extend the class(s) to add extra function '''
+
+class DbServiceAbstract():
+  protocol = None
+  def install_service(self):
+    raise NotImplementedError("not implemented")
+  def install_api(self):
+    raise NotImplementedError("not implemented")
+  def drop(self):
+    raise NotImplementedError("not implemented")
+  def create(self):
+    raise NotImplementedError("not implemented")
+  def grant_all(self):
+    raise NotImplementedError("not implemented")
+  def query(self, query):
+    raise NotImplementedError("not implemented")
+  def backup_create(self):
+    raise NotImplementedError("not implemented")
+  def backup_restore(self):
+    raise NotImplementedError("not implemented")
+
+''' basic database admin '''
+class DbServiceMysqlDebian(DbServiceAbstract):
+  protocol = 'mysql'
+  hostname = 'localhost'
+  port = '3306'
+  def install_service(self):
+    !sudo apt-get install mysql-server
+  def install_api(self):
+    !sudo apt-get install php5-mysql
+  def drop(self, database):
+    !sudo echo 'mysql root:'
+    !sudo mysql -p -e "DROP DATABASE {database};"
+  def create(self, database):
+    !sudo echo 'mysql root:'
+    !sudo mysql -p -e "CREATE DATABASE {database};"
+  def grant_all(self, database, username, password, host='localhost'):
+    !sudo echo 'mysql root:'
+    !sudo mysql -p -e "GRANT USAGE ON {database}.* TO {username}@{host} IDENTIFIED BY '{password}'; GRANT ALL ON {database}.* TO {username}@{host}; FLUSH PRIVILEGES;"  
+  def backup_create(self, database, sqlfile):
+    !sudo echo 'mysql root:'
+    !sudo mysqldump -u root -p {database} > {sqlfile}
+  def backup_restore(self, database, sqlfile):
+    !sudo echo 'mysql root:'
+    !sudo mysql -p {database} < {sqlfile}
+  def url(self, database, username, password):
+    return Helper.create_url(self.protocol, username, password, self.hostname, self.port, database)
+
+''' basic database admin '''
+class DbServicePgsqlDebian(DbServiceAbstract):
+  name = 'pgsql'
+  hostname = 'localhost'
+  port = '5432'
+  def install_service(self):
+    !sudo apt-get install postgresql
+  def install_api(self):
+    !sudo apt-get python-psycopg2
+    !sudo apt-get install php5-pgsql
+  def drop(self, database):
+    !sudo service postgresql restart
+    !sudo -u postgres psql --command "DROP DATABASE {database};"
+  def create(self, database):
+    !sudo -u postgres psql --command "CREATE DATABASE {database};"
+  def create_user(self, username, password):
+    !sudo -u postgres psql --command "CREATE ROLE {username} PASSWORD '{password}' CREATEROLE INHERIT LOGIN;"
+  def grant_all(self, database, username, password):
+    self.create_user(username, password)
+    #!sudo -u postgres psql --command "CREATE USER {username} PASSWORD '{password}';"
+    !sudo -u postgres psql --command "GRANT ALL PRIVILEGES ON DATABASE {database} TO {username};"
+  def backup_create(self, database, sqlfile):
+    !sudo -u postgres pg_dump {database} > {sqlfile}
+  def backup_restore(self, database, sqlfile):
+    !sudo -u postgres psql {database} < {sqlfile}
+  def url(self, database, username, password):
+    return Helper.create_url(self.protocol, username, password, self.hostname, self.port, database)
+    
+class DbServiceFactory():
+  def build(self, db_driver):
+    if db_driver == 'mysql':
+      return DbServiceMysqlDebian()
+    if db_driver == 'pgsql':
+      return DbServicePgsqlDebian()
+    
+''' basic database admin '''
+class Db():
+  def __init__(self, service, database, username, password):
+    self.service = service
+    self.username = username
+    self.password = password
+    self.database = database
+  def install_service(self):
+    self.service.install_service()
+    self.service.install_api()
+  def drop(self):
+    self.service.drop(self.database)
+  def create(self):
+    self.service.create(self.database)
+    self.service.grant_all(self.database, self.username, self.password)
+  def grant_all(self, username, password):
+    self.service.grant(self.database, username, password)
+  def backup(self, sqlfile):
+    self.service.backup_create(self.database, sqlfile)
+  def backup_restore(self, sqlfile):
+    self.service.backup_restore(self.database, sqlfile)
+  def url(self):
+    return self.service.url(self.database, self.username, self.password)
+
+    
+''' abstract webservice '''
+class WebServiceAbstract():
+  name = None
+  def install_service(self):
+      raise NotImplementedError("not implemented")
+  def stop(self):
+      raise NotImplementedError("not implemented")
+  def start(self):
+      raise NotImplementedError("not implemented")
+  def restart(self):
+      raise NotImplementedError("not implemented")
+  def add_site(self, config, data, aliase):
+      raise NotImplementedError("not implemented")
+  def remove_site(self, config, data, aliase):
+      raise NotImplementedError("not implemented")
+    
+''' basic abstract webservice '''
+class WebServiceBasicAbstract(WebServiceAbstract):
+  name = None
+  path_sites_available = '/etc/http/sites-available/'
+  path_sites_enabled = '/etc/http/sites-enabled/'
+  path_www = '/var/www/'
+  def get_site_path(self, aliase):
+    return os.path.join(self.path_www, aliase + '/')
+  def get_config_path(self, aliase):
+    return os.path.join(self.path_sites_available, aliase)
+  def _unlink_site_config(self, aliase):
+    config = self.get_config_path(aliase)
+    !sudo unlink {config}
+  def _link_site_config(self, aliase, path_sites_available):
+    !sudo unlink {self.path_sites_available}/{aliase}
+    !sudo ln -s {path_sites_available} {self.path_sites_available}/{aliase}
+  def _unlink_site_www_data(self, aliase):
+    !sudo unlink {self.path_www}/{aliase}
+  def _link_site_www_data(self, aliase, data_path):
+    !sudo unlink {self.path_www}/{aliase}
+    !sudo ln -s {data_path} {self.path_www}/{aliase}
+  def _enable_site(self, aliase):
+    !sudo unlink {self.path_sites_enabled}/{aliase}
+    !sudo ln -s {self.path_sites_available}/{aliase} {self.path_sites_enabled}/{aliase}
+    !sudo service nginx reload
+  def _disable_site(self, aliase):
+    !sudo unlink {self.path_sites_enabled}/{aliase}
+    !sudo service nginx reload
+    
+''' basic apache2 admin '''
+class WebServiceApache2Debian(WebServiceBasicAbstract):
+  name = 'apache2'
+  path_sites_available = '/etc/apache2/sites-available/'
+  path_sites_enabled = '/etc/apache2/sites-enabled/'
+  path_www = '/var/www/'
+  def install_service(self):
+    !sudo apt-get install apache2
+    !sudo a2enmod rewrite
+    self.install_service_ssl()
+    !sudo service apache2 restart
+  def stop(self):
+    !sudo service apache2 stop
+  def start(self):
+    !sudo service apache2 start
+  def restart(self):
+    !sudo service apache2 restart
+  def add_site(self, aliase, data, config):
+    self._link_site_www_data(aliase, data)
+    self._link_site_config(aliase, config)
+    self._enable_site(aliase)
+  def remove_site(self, aliase):
+    self._disable_site(aliase)
+    self._unlink_site_config(aliase)
+    self._unlink_site_www_data(aliase)
+  def _enable_site(self, aliase):
+    !sudo a2ensite {aliase}
+    #!sudo service apache2 reload
+  def _disable_site(self, aliase):
+    !sudo a2dissite {aliase}
+    #!sudo service apache2 reload
+  def install_service_ssl(self):
+    !sudo a2ensite default-ssl
+    !sudo apt-get install openssl
+    !sudo a2enmod ssl
+    !sudo a2ensite default-ssl
+  def install_service_mod_fastcgi_and_php5(self):
+    ''' install fastcgi and php5 packages to provide support for high volume webservice '''
+    !sudo apt-get install apache2-mpm-worker
+    !sudo apt-get install libapache2-mod-fastcgi
+    !sudo apt-get install php5-fpm php5
+    !sudo a2enmod actions fastcgi aliase
+    !sudo service apache2 restart
+  def install_service_wsgi(self):
+    !sudo apt-get install libapache2-mod-wsgi
+  def install_service_load_balancer(self):
+    !sudo apt-get install libapache2-mod-proxy-html
+    !sudo a2enmod proxy_balancer
+    !sudo a2enmod headers
+  def install_service_mod_php5(self):
+    ''' install basic php webpage provider,  this one supports debugging through xdebug '''
+    !sudo apt-get install apache2-mpm-prefork
+    !sudo apt-get install libapache2-mod-php5
+    # TODO: mod php and php5 what one is useless? 
+    !sudo a2enmod php5
+    !sudo a2enmod mod-php5
+    !sudo service apache2 restart
+  
+''' basic nginx admin '''
+class WebServiceNginxDebian(WebServiceBasicAbstract):
+  name = 'nginx'
+  path_sites_available = '/etc/nginx/sites-available/'
+  path_sites_enabled = '/etc/nginx/sites-enabled/'
+  path_www = '/var/www/'
+  def install_service(self):
+    !sudo apt-get install nginx
+  def stop(self):
+    !sudo service nginx stop
+  def start(self):
+    !sudo service nginx start
+  def restart(self):
+    !sudo service nginx restart
+  def add_site(self, aliase, data, config):
+    self._link_site_www_data(aliase, data)
+    self._link_site_config(aliase, config)
+    self._enable_site(aliase)
+  def remove_site(self, aliase):
+    self._disable_site(aliase)
+    self._unlink_site_config(aliase)
+    self._unlink_site_www_data(aliase)
+  def install_service_php5_fpm(self):
+    !sudo apt-get install php5-fpm php5
+
+class WebServiceFactory():
+  def build(self, service):
+    if service == 'apache2':
+      return WebServiceApache2Debian()
+    if service == 'nginx':
+      return WebServiceNginxDebian()
+    
+''' basic site '''
+class WebSite():
+  def __init__(self, webservice, alias, data_path, config_path):
+    self.webservice = webservice
+    self.alias = alias
+    self.data_path = data_path
+    self.config_path = config_path
+    self.www_path = webservice.get_site_path(alias)
+  def install_service(self):
+    self.webservice.install_service()
+  def stop(self):
+    self.webservice.remove_site(self.alias)
+    self.webservice.restart()
+  def start(self):
+    self.webservice.add_site(self.alias, self.data_path, self.config_path )
+    self.webservice.restart()
+
+    
+''' basic webapp project '''
+class WebAppBasic():
+  def __init__(self, website, db):
+    self.website = website
+    self.db = db
+  def install(self):
+    self.db.install_service()
+    self.website.install_service()
+    self.db.create()
+    self.website.start()
+  def uninstall(self):
+    self.website.stop()
+    self.db.drop()
+  def reconfigure(self):
+    self.website.stop()
+    self.db.create()
+    self.website.start()
+    
+''' static method tools to help '''
+class Helper():
+  @staticmethod
+  def add_hosts_dns(ip, dns):
+    !sudo sh -c 'echo "{ip} {dns}" >> /etc/hosts'
+  @staticmethod
+  def remove_hosts_dns(dns):
+    ! sudo sh -c 'sed -i "/{dns}/ d" /etc/hosts'
+  @staticmethod
+  def render_template_warn(ignore_str):
+    return """!! Built from a template file.  You should edit the master template then rebuild."""
+  @staticmethod
+  def render_template(infile, env):
+    ''' Warning: besure the template is of a trusted source.. running eval on data '''
+    with open(infile, 'r') as f:
+        data = f.read()
+        return eval('"""' + data + '"""')
+    return ''
+  @staticmethod
+  def create_url(self, protocol='http', username='none', password='none', hostname='localhost', port=None, path=''):
+    #import urlparse
+    #print urlparse.urlunparse().....
+    if port:
+      return protocol + '://' + username + ':' + password + '@' + hostname + ':' + port + '/' + path
+    else:
+      return protocol + '://' + username + ':' + password + '@' + hostname + '/' + path
+  @staticmethod
+  def render_template_tofile(infile, outfile, env):
+    open(outfile, 'w').write(Helper.render_template(infile, env))
+  @staticmethod
+  def render_templates_in_path(env, path, prefix = '*.manage_template'):
+    ''' find all templates in the given path with the given file prefix then render them as a template. '''
+    #!find -type f -name *.manage_template
+    import fnmatch
+    import os
+    matches = []
+    for root, dirnames, filenames in os.walk(path):
+      for filename in fnmatch.filter(filenames, prefix):
+        fpath = os.path.join(root, filename)
+        Helper.render_template_tofile(fpath, os.path.splitext(fpath)[0], env)
+
+        

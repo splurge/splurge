@@ -1,6 +1,6 @@
 # Data files
-app/splurge/data/*
-app/splurge/logs/*
+#app/splurge/data/*
+#app/splurge/logs/*
 *~
 *.py[co]
 
@@ -29,3 +29,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+!app/bin
