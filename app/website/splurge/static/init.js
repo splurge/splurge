@@ -1,3 +1,4 @@
+var slider;
 $(function() {
     
     $.getJSON('../splurge_service_getinstitutions/', function(data) {
@@ -25,6 +26,27 @@ $(function() {
                 var imgurl = "http://covers.openlibrary.org/b/ISBN/" + data[1] + "-M.jpg";
                 $('#box').append('<img src="' + imgurl + '" width="75" height="75" alt="" />Rank: <b>' + data[2] + '</b> ISBN:' + data[1] + '<br/>');
             }
+
+	    //slider starts here
+	    $('#recomslider').empty();
+	    if (slider != undefined) {    
+		slider.destroyShow();
+	    }
+
+	    for (i = 0; i < alldata.results.length; i++) {
+                var data = alldata.results[i];
+                var imgurl = "http://covers.openlibrary.org/b/ISBN/" + data[1] + "-M.jpg";
+                $('#recomslider').append('<div class="cover"><img src="' + imgurl + '" width="135" height="200" alt="" /> <br /> Rank: ' + data[2] + '<br />' + data[1] + '</div>');
+                $('#recomslider').resize();
+            }
+	    
+	    //initialize carousel
+	    slider = $('#recomslider').bxSlider({
+	    	displaySlideQty: 2,
+		moveSlideQty: 1,
+		infiniteLoop: false
+	    });
+
         });
     });
     $('#isbn').change();
