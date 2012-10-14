@@ -437,6 +437,50 @@ REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
+-- recommend_items():
+-- Find others that took out the same item
+-- Find out what other items they took out during a given time range
+-- Count how many times those other items were taken out
+-- Cap the popularity to avoid the Harry Potter effect
+CREATE OR REPLACE FUNCTION recommend_items(
+    target_isbn TEXT,
+    max_rank INT DEFAULT 20,
+    start_year TEXT DEFAULT NULL,
+    end_year TEXT DEFAULT NULL
+)
+RETURNS TABLE (original_isbn TEXT, suggested_isbn TEXT, pop BIGINT) AS $$
+  WITH recommendations AS (
+    SELECT isbn_look, i.isbn, tf.patron_id, tf.item_no, tf.institution, COUNT(*) AS popularity
+    FROM transaction tf
+      INNER JOIN (
+        SELECT isbn AS isbn_look, patron_id, t.institution
+        FROM transaction t
+          INNER JOIN item i ON t.item_no = i.item_no
+        WHERE isbn = $1
+        GROUP BY isbn_look, patron_id, t.institution
+      ) AS usr
+        ON tf.patron_id = usr.patron_id
+          AND tf.institution = usr.institution
+      INNER JOIN item i
+        ON tf.item_no = i.item_no
+          AND tf.institution = i.institution
+      WHERE i.isbn <> $1
+        AND tf.transact_time BETWEEN to_timestamp(COALESCE($3, '1900'),'YYYY')
+         AND to_timestamp(COALESCE($4, '2999'),'YYYY')
+    GROUP BY isbn_look, i.isbn, tf.patron_id, tf.item_no, tf.institution
+    HAVING COUNT(*) > 1
+    ORDER BY popularity DESC, isbn_look, tf.item_no
+  )
+  SELECT isbn_look::TEXT, isbn::TEXT, popularity::BIGINT FROM (
+    SELECT isbn_look, isbn, popularity, RANK() OVER (PARTITION BY isbn_look ORDER BY popularity DESC, isbn) AS rank
+    FROM recommendations
+  ) AS final
+  WHERE final.rank < $2; 
+$$ LANGUAGE SQL STABLE ROWS 10;
+
+-- Avoid sequential scans on the transaction table if we're lucky
+-- enough to have a reasonably restricted date range
+CREATE INDEX transaction_time ON transaction (transact_time);
 
 --
 -- PostgreSQL database dump complete

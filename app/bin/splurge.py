@@ -259,14 +259,13 @@ class Splurge:
   build a sql where filter 
   institutions = CSV list of institutionIds
   '''
-  def createTransactionFilter(self,institutionIds=None, startYear=None, endYear=None):
+  def createTransactionFilter(self,institutionIds=None,foo=None,bar=None):
     #TODO: make sql injection safe!
     wheresql = ""
     if institutionIds: 
         for institutionId in institutionIds:
             if institutionId != None:
-                wheresql += " AND transaction_filterable.institution = {0}".format(institutionId)
-    if startYear and endYear: wheresql += " AND transaction_filterable.transact_time between to_timestamp('{0}','YYYY') and to_timestamp('{1}','YYYY')".format(startYear,endYear)
+                wheresql += " AND tf.institution = {0}".format(institutionId)
     return wheresql
     
   
@@ -284,6 +283,7 @@ class Splurge:
     records = self.cur.fetchall()
     return records
     
+
   """
   Given an ISBN and filter, return recommendations.
   
@@ -292,59 +292,40 @@ class Splurge:
   TODO: speed up query by using a collection of ISBNs that are related to one another.
   TODO: make sql injection safe!
   """
-  def getRecommendations(self, isbn=None, sqlWhereTransactionFilter=''):
-    if isbn is None: isbn = self.getRandomISBN(sqlWhereTransactionFilter)
+  def getRecommendations(self, isbn=None, sqlWhereTransactionFilter='', startYear=None, endYear=None, maxRank=20):
+    if isbn is None:
+        isbn = self.getRandomISBN(sqlWhereTransactionFilter)
     query = """
-SELECT isbn_lookup, isbn, poppop FROM 
-  (SELECT isbn_lookup, item_no, institution, isbn, poppop, rank() OVER (PARTITION BY isbn_lookup, isbn_lookup ORDER BY poppop DESC, isbn ) from
-    (SELECT isbn_lookup, itemmmm.item_no, itemmmm.institution, itemmmm.isbn, sum(pop) AS poppop FROM item AS itemmmm,
-    -- all transaction items of users 
-      (SELECT distinct isbn_lookup, transaction_filterable.patron_id, transaction_filterable.item_no, transaction_filterable.institution, count(*) as pop FROM transaction as transaction_filterable,
-    -- that checked out items
-        (select distinct isbn_lookup, transactionn.patron_id, transactionn.institution from transaction as transactionn,
-    -- related to item_no(s)
-          (select distinct isbn_lookup, ii.item_no, ii,institution from item as ii, 
-    -- related to isbn(s)
-            (select distinct isbn_lookup, i.isbn from item as i, 
-    -- found with items_no
-              (select Theisbn.isbn_lookup, iitme.item_no, iitme.institution from item as iitme,
-    -- that have isbn
-    
-              -- MANUAL ISBN
-              (select '{1}'::text as isbn_lookup) as Theisbn
-              -- RANDOM ISBN(s)
-              -- (select isbn as isbn_lookup from item order by random() limit 10000) as Theisbn
-              -- ALL ISBN(s)
-              -- (select isbn as isbn_lookup from item) as Theisbn
-              
-              where TRUE and iitme.isbn = Theisbn.isbn_lookup ) as ind
-            where i.item_no = ind.item_no and i.institution = ind.institution ) as allrelatedisbn
-          where ii.isbn = allrelatedisbn.isbn) as relateditemno
-        where TRUE and transactionn.item_no = relateditemno.item_no) as usr
-        
-    --  (select iiittem.item_no, iiittem.institution from item as iiittem where iiittem.isbn = isbn_lookup) as blacklist
-      WHERE
-    --  NOT transaction_filterable.item_no = blacklist.item_no
-    --  AND transaction_filterable.institution = blacklist.institution
-      NOT EXISTS (
-        select iiittem.item_no, iiittem.institution from item as iiittem 
-        where iiittem.isbn = isbn_lookup
-        and iiittem.item_no = transaction_filterable.item_no
-        and iiittem.institution = transaction_filterable.institution 
-        {0}
-      )
-      AND transaction_filterable.patron_id = usr.patron_id
-      AND transaction_filterable.institution = usr.institution
+WITH recommendations AS (
+  SELECT isbn_look, i.isbn, tf.patron_id, tf.item_no, tf.institution, COUNT(*) AS popularity
+  FROM transaction tf
+    INNER JOIN (
+      SELECT isbn AS isbn_look, patron_id, t.institution
+      FROM transaction t
+        INNER JOIN item i ON t.item_no = i.item_no
+      WHERE isbn = %(isbn)s
+      GROUP BY isbn_look, patron_id, t.institution
+    ) AS usr
+      ON tf.patron_id = usr.patron_id
+        AND tf.institution = usr.institution
+    INNER JOIN item i
+      ON tf.item_no = i.item_no
+        AND tf.institution = i.institution
+    WHERE i.isbn <> %(isbn)s
       {0}
-      GROUP BY isbn_lookup, transaction_filterable.patron_id, transaction_filterable.item_no, transaction_filterable.institution) AS otheruserstookout
-    WHERE itemmmm.item_no = otheruserstookout.item_no and itemmmm.institution = otheruserstookout.institution
-    GROUP BY isbn_lookup, itemmmm.item_no, itemmmm.institution, itemmmm.isbn
-    HAVING sum(pop) > 1
-    ORDER BY poppop desc, isbn_lookup, itemmmm.item_no) as resultsss
-  WHERE TRUE) as final
-WHERE final.rank < 20
-  """.format(sqlWhereTransactionFilter, isbn)
-    self.cur.execute(query)
+      AND tf.transact_time BETWEEN to_timestamp(COALESCE(%(startYear)s, '1900'),'YYYY')
+        AND to_timestamp(COALESCE(%(endYear)s, '2999'),'YYYY')
+  GROUP BY isbn_look, i.isbn, tf.patron_id, tf.item_no, tf.institution
+  HAVING COUNT(*) > 1
+  ORDER BY popularity DESC, isbn_look, tf.item_no
+)
+SELECT isbn_look::TEXT, isbn::TEXT, popularity::BIGINT FROM (
+  SELECT isbn_look, isbn, popularity, RANK() OVER (PARTITION BY isbn_look ORDER BY popularity DESC, isbn) AS rank
+  FROM recommendations
+) AS final
+WHERE final.rank < %(maxRank)s; 
+""".format(sqlWhereTransactionFilter)
+    self.cur.execute(query, {'isbn': isbn, 'startYear': startYear, 'endYear': endYear, 'maxRank': maxRank})
     return self.cur.fetchall()
     
   def test(self,isbn=None, sqlWhereTransactionFilter=''):
@@ -354,4 +335,3 @@ WHERE final.rank < 20
     records = self.getRecommendations(isbn,sqlWhereTransactionFilter)
     for record in records:
         print(record)
-      

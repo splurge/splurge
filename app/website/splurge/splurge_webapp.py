@@ -54,7 +54,7 @@ def splurge_service(isbn=None, institution_names=None, startYear=None, endYear=N
         for institution_name in institution_names.split(","):
             institutions.append(splurge.getInstitutionId(institution_name.strip()))
         
-    filter = splurge.createTransactionFilter(institutions, startYear, endYear)
+    filter = splurge.createTransactionFilter(institutions)
     if isbn == None or isbn=='random':
       isbn = splurge.getRandomISBN(filter)
     records = splurge.getRecommendations(isbn, filter)
