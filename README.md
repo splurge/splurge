@@ -8,22 +8,6 @@ SPLURGE will collect usage data from OCUL members and build a recommendation eng
 
 # Installation
 
-Here is everything necessary to get SPLURGE running on your own computer.
-
-If you wish to skip creating you databae and webserver you can use the manage.splurge.ipy.sh tool.
-Be sure to git clone --recursive to include submodule ipython
-
-Using the manage script (tested on *buntu):
-
-    . ./set_password.sh
-    ./manage.splurge.ipy.sh
-    app.install()
-    https://splurge.localhost/splurge_service/
-
-An other option is to manualy download the packages and configure the services.
-
-(As of 1 October 2012: Incomplete.)
-
 ## Required packages 
 
 You will need to install some software packages to use SPLURGE. (Ubuntu commands in brackets.)
@@ -106,8 +90,6 @@ Download SPLURGE from the [https://github.com/splurge/splurge.git](https://githu
 
 This assumes that you're a developer and have downloaded all of the data files from Scholars Portal into the `app/splurge/data/` directory.
 
-TODO: Add test data to the repo so this works out of the box for non-developers.
-
 Run this:
 
     $ cd app/splurge
@@ -129,17 +111,13 @@ The service is running at [http://localhost:3000/splurge_service/](http://localh
 
 ## Test ISBNs
 
-* 0321643720      
-* 9780321643728   
-* 0273713248      
-* 9780273713241   
-* 0763766321      
-* 9780763766320   
-* 0176501657      
-* 9780176501655   
-* 9780538733410   
-* 9781412974882   
-* 0773502424
+* 0679723951
+* 0691090254
+* 9780140137941
+* 0374270325	
+* 9780674991453	
+* 9780674992405
+* 0521482631	
 
 # TO DO
 
