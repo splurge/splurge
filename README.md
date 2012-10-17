@@ -6,6 +6,10 @@ Library catalogues don't have any such feature, but they should. And libraries a
 
 SPLURGE will collect usage data from OCUL members and build a recommendation engine that can be integrated into any member's catalogue.  The code will be made available under the GNU Public License and the data will be made available under an open data license.
 
+# Mailing list
+
+There is a [SPLURGE mailing list at Google Groups](https://groups.google.com/forum/?fromgroups#!forum/splurge) that anyone can join. Either subscribe through Google or email `splurge+subscribe@googlegroups.com`.  The archives are public.
+
 # Installation
 
 ## Required packages 
