@@ -72,7 +72,7 @@ class Splurge:
         """
         self.conn.rollback()
         self.cur.execute("""
-SELECT institution_id, institution, version FROM institution
+SELECT institution_id, institution FROM institution
         """)
         return self.cur.fetchall()
 
@@ -159,11 +159,11 @@ SELECT institution_id FROM institution WHERE institution = %s
         try:
             self.cur.copy_from(
                 open(load_file,'r'), 'item', sep='\t',
-                columns=('item_no', 'isbn')
+                columns=('item_no', 'isbn', 'title', 'author', 'publisher', 'year', 'url')
             )
             self.conn.commit()
             self.cur.execute("""
-UPDATE item SET inst = %s WHERE inst = NULL
+UPDATE item SET institution = %s WHERE institution is NULL
             """, (inst_id,))
             self.conn.commit()
         except Exception as exc:
@@ -247,7 +247,8 @@ UPDATE transaction SET institution = %s WHERE institution = NULL
                             if re.match(self.reItem, load_file):
                                 self.load_items_fromfile(inst, load_file)
                             if re.match(self.reTransactions, load_file):
-                                self.load_transactions_fromfile(inst, load_file)
+                                ## TODO: Rename functions so we're not using old_load_transactions_fromfile
+                                self.old_load_transactions_fromfile(inst, load_file)
                         ## update timestamp
                         self.update_inst_ver(inst, stamp)
   
@@ -289,7 +290,7 @@ INSERT INTO item (item_no, isbn, institution) VALUES (%s, %s, %s)
     def old_load_transactions_fromfile(self, institution, load_file):
         "Old TSV format"
         inst_id = self.get_inst_id_or_create(institution)
-        print(institution + '\t' + load_file)
+        print(str(inst_id)+':'+institution + '\t' + load_file)
         log_file = os.path.join(self.log_path, os.path.basename(load_file))
         log = open(log_file, 'w')
         for line in open(load_file,'r'):
