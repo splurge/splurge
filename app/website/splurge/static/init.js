@@ -1,4 +1,3 @@
-var slider;
 $(function() {
     
     $.getJSON('../splurge_service_getinstitutions/', function(data) {
@@ -14,21 +13,24 @@ $(function() {
         var url = '../splurge_service/' + $('#isbn').val() + '/' + $('#institutions').val() + '/' + $('#startDate').val() + '/'+ $('#endDate').val() + '/';
         $.getJSON(url, function(alldata) {
             console.log(alldata);
-            $('#box').empty();
+            $('#recommendations').empty();
+            $('#original').empty();
             var imgurl = "http://covers.openlibrary.org/b/ISBN/" + alldata.isbn + "-M.jpg";
-            $('#box').append('<img src="' + imgurl + '" width="75" height="75" alt="" /><br/>');
-            $('#box').append("<h4>Results for: " + alldata.isbn + "</h4><hr/>");
+            $('#original').append('<div class="cover"><img src="' + imgurl + '" height="200" width="135" alt="" /> <br /> ' + alldata.isbn + '</div>');
                     
-            for (i = 0; i < alldata.results.length; i++) {
+	    // Old: just displays the covers in a big long row, all at once
+            /* for (i = 0; i < alldata.results.length; i++) {
                 var data = alldata.results[i];
                 console.log(data);
-                //$('#box').append(data);
+                //$('#recommendations').append(data);
                 var imgurl = "http://covers.openlibrary.org/b/ISBN/" + data[1] + "-M.jpg";
-                $('#box').append('<img src="' + imgurl + '" width="75" height="75" alt="" />Rank: <b>' + data[2] + '</b> ISBN:' + data[1] + '<br/>');
+                $('#recommendations').append('<img src="' + imgurl + '" width="75" height="75" alt="" />Rank: <b>' + data[2] + '</b> ISBN:' + data[1] + '<br/>');
             }
+	    */
 
+	    var slider;
 	    //slider starts here
-	    $('#recomslider').empty();
+	    $('#recommendation_slider').empty();
 	    if (slider != undefined) {    
 		slider.destroyShow();
 	    }
@@ -36,13 +38,13 @@ $(function() {
 	    for (i = 0; i < alldata.results.length; i++) {
                 var data = alldata.results[i];
                 var imgurl = "http://covers.openlibrary.org/b/ISBN/" + data[1] + "-M.jpg";
-                $('#recomslider').append('<div class="cover"><img src="' + imgurl + '" width="135" height="200" alt="" /> <br /> Rank: ' + data[2] + '<br />' + data[1] + '</div>');
-                $('#recomslider').resize();
+                $('#recommendation_slider').append('<div class="cover"><img src="' + imgurl + '" width="135" height="200" alt="" /> <br /> Rank: ' + data[2] + '<br />' + data[1] + '</div>');
+                $('#recommendation_slider').resize();
             }
 	    
 	    //initialize carousel
-	    slider = $('#recomslider').bxSlider({
-	    	displaySlideQty: 2,
+	    slider = $('#recommendation_slider').bxSlider({
+	    	displaySlideQty: 5,
 		moveSlideQty: 1,
 		infiniteLoop: false
 	    });

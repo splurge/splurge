@@ -133,7 +133,12 @@ CREATE TABLE item (
     item_id bigint NOT NULL,
     institution bigint,
     item_no character varying(16) NOT NULL,
-    isbn character varying(16) NOT NULL
+    isbn character varying(16) NOT NULL,
+    title text,
+    author text,
+    publisher text,
+    year text,
+    url text
 );
 
 
