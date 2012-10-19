@@ -172,7 +172,7 @@ UPDATE item SET institution = %s WHERE institution is NULL
             log = open(os.path.join(self.log_path, inst_name), 'w')
             log.write('\n'+str(exc))
             self.conn.rollback()
-          
+            
     def load_transactions_fromfile(self, institution, load_file):
         """
         Loads transactions from a tab-delimited file.
@@ -219,7 +219,7 @@ UPDATE transaction SET institution = %s WHERE institution = NULL
         """
 
         print('\nUpdating database with new data from institutions...\n')
-        for inst in os.listdir(self.data_path):
+        for inst in sorted(os.listdir(self.data_path)):
             inst_path = os.path.join(self.data_path, inst)
             if os.path.isdir(inst_path):
                 print("\nChecking %s for updates" % (inst,))
@@ -234,7 +234,7 @@ UPDATE transaction SET institution = %s WHERE institution = NULL
                     #fixed format
                     stamp = datetime.datetime.strptime(timestamp, "%Y-%m-%d")
                     if curr_ver == None or stamp.date() > curr_ver.date():
-                        print("* Found update: timestamp:%s is < version:%s"
+                        print("* Found update: timestamp %s is > version:%s"
                             % (stamp.date(), curr_ver,)
                         )
                         inst_up_path = os.path.join(inst_path, timestamp)
