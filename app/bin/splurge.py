@@ -147,31 +147,38 @@ SELECT institution_id FROM institution WHERE institution = %s
         Loads items from a tab-delimited file.
 
         The columns are: 
-          * itemId (integer)
-          * ISBN   (string)
+          * item_no (integer)
+          * isbn   (string)
+          * title (string)
+          * author (string)
+          * publisher (string)
+          * year (string)
+          * url (string)
         
         File format:
-        114784  0415972531
+        1000002 0691090254      Psychology of the Unconscious   Jung, C.G.      Princeton University Press      2001   https://www.library.yorku.ca/find/Record/1579105
         """
 
         inst_id = self.get_inst_id_or_create(inst)
         print(str(inst_id)+':'+inst + '\t' + load_file)
+        inst_name = inst + '_' + os.path.basename(load_file)
+        log = open(os.path.join(self.log_path, inst_name), 'w')
+
         try:
-            self.cur.copy_from(
-                open(load_file,'r'), 'item', sep='\t',
-                columns=('item_no', 'isbn', 'title', 'author', 'publisher', 'year', 'url')
-            )
-            self.conn.commit()
-            self.cur.execute("""
-UPDATE item SET institution = %s WHERE institution is NULL
-            """, (inst_id,))
-            self.conn.commit()
+            for line in open(load_file,'r'):
+                item_no, isbn, title, author, publisher, year, url = list(line.rstrip().split("\t"))
+                try:
+                    self.cur.execute("""
+INSERT INTO item (institution, item_no, isbn, title, author, publisher, year, url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        """, ([inst_id, item_no, isbn, title, author, publisher, year, url]))
+                    self.conn.commit()
+                except Exception as exc:
+                    print str(exc)
+                    log.write('\n'+str(exc))
+                    self.conn.rollback()
+                continue
         except Exception as exc:
-            print(str(exc))
-            inst_name = inst + '_' + os.path.basename(load_file)
-            log = open(os.path.join(self.log_path, inst_name), 'w')
-            log.write('\n'+str(exc))
-            self.conn.rollback()
+            log.write('\nERROR:\n' + str(exc) + '\n')
             
     def load_transactions_fromfile(self, institution, load_file):
         """
