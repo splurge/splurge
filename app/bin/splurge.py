@@ -416,7 +416,7 @@ WITH recommendations AS (
         WHERE i.isbn <> %(isbn)s
           {0}
           AND tf.transact_time BETWEEN to_timestamp(COALESCE(%(start_year)s, '1900'),'YYYY')
-            AND to_timestamp(COALESCE(%(end_year)s, '2999'),'YYYY')
+          AND to_timestamp(COALESCE(%(end_year)s, '2999'),'YYYY')
   GROUP BY isbn_look, i.isbn, tf.patron_id, tf.item_no, tf.institution
   HAVING COUNT(*) > 1
   ORDER BY popularity DESC, isbn_look, tf.item_no
