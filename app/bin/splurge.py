@@ -360,7 +360,7 @@ VALUES (TO_TIMESTAMP(%s), %s, %s, %s)
         TODO: make sql injection safe!
         """
 
-        self.cur.execute("""
+        query = ("""
 SELECT isbn
 FROM item, (
     SELECT item_no, institution
@@ -376,7 +376,8 @@ WHERE item.item_no = randomtransaction.item_no
     AND item.institution = randomtransaction.institution
 LIMIT 1
         """.format(sql_transaction_filter))
-        records = self.cur.fetchall()
+        self.cur.execute(query, {'start_year': None, 'end_year': None})
+        records = self.cur.fetchall()[0]
         return records
 
     def recommend(self, isbn=None, sql_transaction_filter='', start_year=None,
