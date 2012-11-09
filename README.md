@@ -31,11 +31,6 @@ First, install it, for example on Ubuntu (see [Ubuntu documentation on PostgreSQ
 
     $ sudo apt-get install postgresql
 
-Set a password:
-
-    $ sudo -u postgres psql postgres
-    postgres=# \password postgres
-
 At the shell, create the splurge_user account and the splurge database:
 
     $ sudo -u postgres createuser
@@ -57,19 +52,13 @@ Note that the password is set to "splurge". For your local testing, this is fine
 
 Now set up the database:
 
-    psql -d splurge -U splurge_user -W < app/db/schema_dump.sql 
+    psql -d splurge -h localhost -U splurge_user -W -f app/db/schema_dump.sql 
     
-If you get an error like this:
-
-    psql: FATAL:  Peer authentication failed for user "splurge_user"
-
-then follow the instructions at [Get Postgres working on Ubuntu or Linux Mint](http://blog.deliciousrobots.com/2011/12/13/get-postgres-working-on-ubuntu-or-linux-mint/).
-
 If you ever need to reset the splurge database back to zero and start over, run this command again.
 
 Later, if you want to dump out the database, run
 
-    $     pg_dump -U splurge_user splurge
+    $ pg_dump -U splurge_user splurge
 
 ## Set the SPLURGE_USER environment variable
 
@@ -85,18 +74,22 @@ Test that it was set properly by running
 
 ## Download SPLURGE
 
-Download SPLURGE from the [https://github.com/splurge/splurge.git](https://github.com/splurge/splurge.git):
+Download SPLURGE from the [git repository](https://github.com/splurge/splurge.git):
 
     $ git clone https://github.com/splurge/splurge.git
     $ cd splurge
 
 ## Loading in data
 
-This assumes that you're a developer and have downloaded all of the data files from Scholars Portal into the `app/splurge/data/` directory.
+This assumes that you're a developer and have downloaded all of the data files
+from Scholars Portal into the `app/splurge/data/` directory. Subdirectories of
+`data` use the following directory and file structure:
+
+* *institution-name*/*YYYY-mm-dd*/items.txt
+* *institution-name*/*YYYY-mm-dd*/transactions.txt
 
 Run this:
 
-    $ cd app/splurge
 	$ ./tool.py --update_database
 	
 This will take a while.	
