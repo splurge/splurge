@@ -18,7 +18,7 @@ import splurge
 splurge = splurge.Splurge(
     os.path.join(root_app_path, 'data/'),
     os.path.join(root_app_path, 'logs/'),
-    'splurge', 'splurge_user', os.environ['SPLURGE_DB_PASSWORD'], 'localhost', '5432',
+    'splurge', 'splurge_user', os.environ['SPLURGE_DB_PASSWORD'], '127.0.0.1', '5432',
 )
 
 if args.update_database: splurge.load_institution_updates()
