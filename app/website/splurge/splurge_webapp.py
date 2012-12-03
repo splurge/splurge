@@ -14,7 +14,7 @@ import splurge
 RECOMMENDER = splurge.Splurge(
     os.path.join(os.environ['SPLURGE_ROOT_APP_PATH'], 'data/'),
     os.path.join(os.environ['SPLURGE_ROOT_APP_PATH'], 'logs/'),
-    'splurge', 'splurge_user', os.environ['SPLURGE_DB_PASSWORD'], 'localhost', '5432',
+    'splurge', 'splurge_user', os.environ['SPLURGE_DB_PASSWORD'], '127.0.0.1', '5432',
 )
 
 from flask import Flask, jsonify
